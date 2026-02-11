@@ -1,0 +1,553 @@
+<meta name='viewport' content='width=device-width, initial-scale=1'/><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>The Physics of Us | Promise Day</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@300;500;600;700&family=Alex+Brush&display=swap" rel="stylesheet">
+    <style>
+        /* --- VISUAL CORE SYSTEM --- */
+        :root {
+            --void-black: #030305;
+            --deep-space: #0b0b14;
+            --neon-cyan: #00f3ff;
+            --neon-magenta: #ff0055;
+            --neon-gold: #ffd700;
+            --glass-surface: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --hologram-grid: linear-gradient(0deg, transparent 24%, rgba(0, 243, 255, .1) 25%, rgba(0, 243, 255, .1) 26%, transparent 27%, transparent 74%, rgba(0, 243, 255, .1) 75%, rgba(0, 243, 255, .1) 76%, transparent 77%, transparent);
+        }
+
+        body {
+            background-color: var(--void-black);
+            color: white;
+            font-family: 'Rajdhani', sans-serif;
+            overflow: hidden;
+            margin: 0;
+            touch-action: none;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Typography Enhancements */
+        h1, h2, h3 { font-family: 'Orbitron', sans-serif; letter-spacing: 0.15em; text-transform: uppercase; }
+        .script-font { font-family: 'Alex Brush', cursive; }
+        .tech-text { font-family: 'Rajdhani', monospace; letter-spacing: 0.1em; }
+
+        /* --- ATMOSPHERIC LAYERS --- */
+        #universe-container {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+            background: radial-gradient(circle at 50% 50%, #151520 0%, #000 100%);
+            overflow: hidden;
+        }
+
+        /* Nebula Fog Effect */
+        .nebula {
+            position: absolute;
+            top: -50%; left: -50%; width: 200%; height: 200%;
+            background: url('https://raw.githubusercontent.com/s1mple-1/codepen-assets/master/fog.png'); /* Lightweight texture */
+            background-size: cover;
+            opacity: 0.3;
+            animation: drift 60s linear infinite;
+            pointer-events: none;
+            mix-blend-mode: screen;
+        }
+        
+        @keyframes drift { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* Particle Canvas */
+        #quantum-field {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            mix-blend-mode: lighten;
+        }
+
+        /* --- CINEMATIC START SCREEN --- */
+        #start-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.95);
+            backdrop-filter: blur(20px);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 1.5s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+
+        .start-btn {
+            position: relative;
+            padding: 20px 60px;
+            background: transparent;
+            border: 1px solid var(--neon-cyan);
+            color: var(--neon-cyan);
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            font-size: 1rem;
+            letter-spacing: 4px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.1);
+        }
+
+        .start-btn::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%; width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 243, 255, 0.4), transparent);
+            transition: 0.5s;
+        }
+
+        .start-btn:hover::before { left: 100%; }
+        .start-btn:hover { box-shadow: 0 0 40px rgba(0, 243, 255, 0.4); text-shadow: 0 0 10px var(--neon-cyan); background: rgba(0, 243, 255, 0.05); }
+
+        /* --- 3D REACTOR ENGINE --- */
+        .reactor-viewport {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            perspective: 1000px;
+            overflow: hidden;
+        }
+
+        .reactor-core {
+            position: relative;
+            width: 300px; height: 300px;
+            transform-style: preserve-3d;
+            transition: transform 0.1s cubic-bezier(0.25, 0.46, 0.45, 0.94); /* Smooth interaction */
+        }
+
+        /* Mobile Scale */
+        @media (max-width: 768px) {
+            .reactor-core { transform: scale(0.7); }
+        }
+
+        /* The Singularity (Sun) */
+        .singularity {
+            position: absolute;
+            top: 50%; left: 50%;
+            width: 50px; height: 50px;
+            margin: -25px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #fff 20%, var(--neon-cyan) 60%, transparent 100%);
+            box-shadow: 0 0 60px var(--neon-cyan), 0 0 120px var(--neon-magenta);
+            animation: solar-pulse 4s infinite alternate ease-in-out;
+            z-index: 10;
+        }
+
+        .singularity::after {
+            content: '';
+            position: absolute;
+            top: -50%; left: -50%; width: 200%; height: 200%;
+            border-radius: 50%;
+            border: 2px solid rgba(255,255,255,0.1);
+            animation: spin-flat 4s linear infinite;
+        }
+
+        /* Energy Rings */
+        .energy-ring {
+            position: absolute;
+            top: 50%; left: 50%;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transform-style: preserve-3d;
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.05);
+            pointer-events: none;
+        }
+
+        .ring-1 { width: 400px; height: 400px; margin: -200px; border-color: rgba(0, 243, 255, 0.2); animation: spin-3d 30s linear infinite; }
+        .ring-2 { width: 320px; height: 320px; margin: -160px; border-color: rgba(255, 0, 85, 0.2); animation: spin-3d-rev 25s linear infinite; }
+        
+        /* Mobile Ring Size Adjust */
+        @media (max-width: 768px) {
+            .ring-1 { width: 300px; height: 300px; margin: -150px; }
+            .ring-2 { width: 240px; height: 240px; margin: -120px; }
+        }
+
+        /* Hologram Card Container */
+        .holo-container {
+            position: absolute;
+            top: 50%; left: 50%;
+            width: 0; height: 0;
+            transform-style: preserve-3d;
+        }
+
+        .pos-friend { animation: orbit-friend 15s linear infinite; }
+        .pos-love { animation: orbit-love 15s linear infinite; }
+
+        /* The High-Fidelity Card */
+        .holo-card {
+            position: absolute;
+            width: 140px; height: 190px;
+            margin-top: -95px; margin-left: -70px;
+            background: rgba(10, 10, 15, 0.6);
+            border: 1px solid rgba(0, 243, 255, 0.3);
+            /* Corner Accents using clip-path could be used, but border-image is simpler for glow */
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.1), inset 0 0 20px rgba(0, 243, 255, 0.05);
+            backdrop-filter: blur(6px);
+            transform-style: preserve-3d;
+            overflow: hidden;
+            animation: counter-rotate 15s linear infinite;
+            transition: all 0.4s ease;
+        }
+
+        /* Specific Color for Love Card */
+        .card-love {
+            border-color: rgba(255, 0, 85, 0.3);
+            box-shadow: 0 0 20px rgba(255, 0, 85, 0.1), inset 0 0 20px rgba(255, 0, 85, 0.05);
+        }
+
+        .holo-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--hologram-grid);
+            background-size: 100% 4px;
+            opacity: 0.3;
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        .holo-card img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            filter: contrast(1.1) brightness(1.1) saturate(1.1);
+        }
+
+        /* Holographic Data Overlay */
+        .holo-data {
+            position: absolute;
+            bottom: 0; left: 0; width: 100%;
+            background: linear-gradient(to top, rgba(0,243,255,0.8), transparent);
+            padding: 8px 0;
+            text-align: center;
+            z-index: 10;
+        }
+        
+        .card-love .holo-data { background: linear-gradient(to top, rgba(255,0,85,0.8), transparent); }
+
+        .holo-text {
+            font-size: 8px;
+            color: white;
+            letter-spacing: 2px;
+            font-weight: 700;
+            text-shadow: 0 1px 2px black;
+        }
+
+        /* Interactive Hover */
+        .holo-card:active, .reactor-core:hover .holo-card {
+            border-color: white;
+            box-shadow: 0 0 40px rgba(255,255,255,0.4);
+            transform: scale(1.1);
+            z-index: 100;
+        }
+
+        /* --- SVG BEAM EFFECTS --- */
+        .beam-layer {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .beam-path {
+            stroke: url(#beamGradient);
+            stroke-width: 2;
+            fill: none;
+            filter: url(#glowFilter);
+            stroke-dasharray: 10 5;
+            animation: beam-flow 1s linear infinite;
+        }
+
+        /* --- UI OVERLAYS --- */
+        .ui-layer {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 24px;
+            z-index: 50;
+        }
+
+        .hud-panel {
+            background: rgba(5, 5, 10, 0.5);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-left: 2px solid var(--neon-cyan);
+            padding: 16px 24px;
+            pointer-events: auto;
+            max-width: 400px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .hud-bottom {
+            align-self: center;
+            text-align: center;
+            border-left: none;
+            border-bottom: 2px solid var(--neon-magenta);
+            border-radius: 0 0 12px 12px;
+        }
+
+        /* --- ANIMATIONS --- */
+        @keyframes spin-3d { 0% { transform: rotateX(60deg) rotateZ(0deg); } 100% { transform: rotateX(60deg) rotateZ(360deg); } }
+        @keyframes spin-3d-rev { 0% { transform: rotateX(70deg) rotateZ(0deg); } 100% { transform: rotateX(70deg) rotateZ(-360deg); } }
+        @keyframes orbit-friend { 0% { transform: rotateY(0deg) translateZ(220px); } 100% { transform: rotateY(360deg) translateZ(220px); } }
+        @keyframes orbit-love { 0% { transform: rotateY(180deg) translateZ(220px); } 100% { transform: rotateY(540deg) translateZ(220px); } }
+        
+        /* Mobile Orbit Overrides */
+        @media (max-width: 768px) {
+            @keyframes orbit-friend { 0% { transform: rotateY(0deg) translateZ(160px); } 100% { transform: rotateY(360deg) translateZ(160px); } }
+            @keyframes orbit-love { 0% { transform: rotateY(180deg) translateZ(160px); } 100% { transform: rotateY(540deg) translateZ(160px); } }
+        }
+
+        @keyframes counter-rotate { 0% { transform: rotateY(0deg); } 100% { transform: rotateY(-360deg); } }
+        @keyframes beam-flow { to { stroke-dashoffset: -15; } }
+        @keyframes solar-pulse { 0% { transform: scale(1); opacity: 0.8; } 100% { transform: scale(1.2); opacity: 1; } }
+        @keyframes spin-flat { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+    </style>
+</head>
+<body>
+
+    <!-- Start Screen -->
+    <div id="start-screen">
+        <div class="text-center">
+            <h1 class="text-4xl md:text-6xl text-white mb-2 tracking-[0.2em] font-bold" style="text-shadow: 0 0 20px var(--neon-cyan);">THEORY</h1>
+            <p class="text-gray-400 mb-12 text-xs md:text-sm tech-text tracking-[0.5em] uppercase">Visualizing Quantum Entanglement</p>
+            <button class="start-btn" onclick="initExperience()">INITIALIZE</button>
+        </div>
+    </div>
+
+    <!-- Background Layers -->
+    <div id="universe-container">
+        <div class="nebula"></div>
+        <canvas id="quantum-field"></canvas>
+    </div>
+    
+    <!-- Audio -->
+    <audio id="bg-music" loop> <source src="music.mp3" type="audio/mpeg"> </audio>
+
+    <!-- UI HUD -->
+    <div class="ui-layer">
+        <!-- Top Left Info -->
+        <div class="hud-panel">
+            <h2 class="text-xl md:text-3xl font-bold text-white mb-1">THEORY OF US</h2>
+            <p class="text-xs text-pink-500 script-font text-xl">Promise Day Protocol</p>
+        </div>
+
+        <!-- Bottom Promise -->
+        <div class="hud-panel hud-bottom mb-8">
+            <div class="text-[9px] text-cyan-400 tracking-[0.3em] font-bold mb-3 uppercase border-b border-white/10 pb-2">Hypothesis Verified</div>
+            <p class="text-sm text-gray-200 leading-relaxed font-light italic">
+                "In a universe of infinite variables, you remain my only constant. Gravity pulls matter together, but my love pulls my soul to yours."
+            </p>
+            <div class="mt-4 flex justify-center gap-4 text-[9px] text-gray-500 font-mono">
+                <span>ROTATION: ENABLED</span>
+                <span>AUDIO: ACTIVE</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3D Reactor Scene -->
+    <div class="reactor-viewport" id="viewport">
+        
+        <!-- SVG Beam (High Fidelity) -->
+        <svg class="beam-layer" width="100%" height="100%">
+            <defs>
+                <linearGradient id="beamGradient" gradientUnits="userSpaceOnUse" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" style="stop-color:var(--neon-cyan);stop-opacity:1" />
+                    <stop offset="50%" style="stop-color:white;stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:var(--neon-magenta);stop-opacity:1" />
+                </linearGradient>
+                <filter id="glowFilter" x="-50%" y="-50%" width="200%" height="200%">
+                    <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+                    <feMerge>
+                        <feMergeNode in="coloredBlur"/>
+                        <feMergeNode in="SourceGraphic"/>
+                    </feMerge>
+                </filter>
+            </defs>
+            <path id="entanglement-line" class="beam-path" d="M0,0 L0,0" />
+        </svg>
+
+        <div class="reactor-core" id="core">
+            <div class="singularity"></div>
+            <div class="energy-ring ring-1"></div>
+            <div class="energy-ring ring-2"></div>
+
+            <!-- Friend Hologram -->
+            <div class="holo-container pos-friend" id="cont-friend">
+                <div class="holo-card" id="card-friend">
+                    <img src="1000097431.jpg" alt="You" onerror="this.src='https://via.placeholder.com/140x190/001/0ff?text=SIGNAL_LOST'">
+                    <div class="holo-data">
+                        <span class="holo-text">SUBJECT: YOU</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Einstein Hologram -->
+            <div class="holo-container pos-love" id="cont-love">
+                <div class="holo-card card-love" id="card-love">
+                    <img src="1000097429.jpg" alt="Love" onerror="this.src='https://via.placeholder.com/140x190/200/f05?text=SIGNAL_LOST'">
+                    <div class="holo-data">
+                        <span class="holo-text">SUBJECT: LOVE</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- CORE LOGIC ---
+        let isActive = false;
+        const startScreen = document.getElementById('start-screen');
+        const audio = document.getElementById('bg-music');
+        const core = document.getElementById('core');
+        
+        function initExperience() {
+            isActive = true;
+            startScreen.style.opacity = '0';
+            setTimeout(() => { startScreen.style.display = 'none'; }, 1500);
+            
+            audio.play().catch(e => console.log("Audio needs user gesture"));
+            
+            // Start loops
+            updateBeam();
+            animateParticles();
+        }
+
+        // --- INTERACTION (TOUCH/MOUSE ROTATION) ---
+        let targetX = 0, targetY = 0;
+        let currentX = 0, currentY = 0;
+        let startX = 0, startY = 0;
+
+        function animateRotation() {
+            // Smooth damping
+            currentX += (targetX - currentX) * 0.05;
+            currentY += (targetY - currentY) * 0.05;
+            
+            core.style.transform = `rotateY(${currentX}deg) rotateX(${-currentY}deg)`;
+            requestAnimationFrame(animateRotation);
+        }
+        animateRotation();
+
+        // Mouse
+        document.addEventListener('mousemove', (e) => {
+            if (!isActive) return;
+            // Desktop subtle movement
+            targetX = (e.clientX - window.innerWidth / 2) * 0.05;
+            targetY = (e.clientY - window.innerHeight / 2) * 0.05;
+        });
+
+        // Touch (Swipe to rotate)
+        document.addEventListener('touchstart', (e) => {
+            startX = e.touches[0].clientX;
+            startY = e.touches[0].clientY;
+        }, {passive: false});
+
+        document.addEventListener('touchmove', (e) => {
+            if (!isActive) return;
+            e.preventDefault();
+            const x = e.touches[0].clientX;
+            const y = e.touches[0].clientY;
+            
+            targetX += (x - startX) * 0.5;
+            targetY += (y - startY) * 0.5;
+            
+            startX = x;
+            startY = y;
+        }, {passive: false});
+
+        // --- DYNAMIC BEAM RENDERER ---
+        const beamPath = document.getElementById('entanglement-line');
+        const cardFriend = document.getElementById('card-friend');
+        const cardLove = document.getElementById('card-love');
+
+        function updateBeam() {
+            if (!isActive) { requestAnimationFrame(updateBeam); return; }
+
+            const r1 = cardFriend.getBoundingClientRect();
+            const r2 = cardLove.getBoundingClientRect();
+
+            // Calculate centers
+            const x1 = r1.left + r1.width/2;
+            const y1 = r1.top + r1.height/2;
+            const x2 = r2.left + r2.width/2;
+            const y2 = r2.top + r2.height/2;
+
+            // Update SVG Path with Bezier Curve for fluidity
+            // Using a curve makes it look more organic like electricity
+            const cx = (x1 + x2) / 2;
+            const cy = (y1 + y2) / 2;
+            
+            // Simple straight line logic for now, curve requires more complex math based on Z-depth
+            const d = `M${x1},${y1} L${x2},${y2}`;
+            beamPath.setAttribute('d', d);
+
+            requestAnimationFrame(updateBeam);
+        }
+
+        // --- PARTICLE SYSTEM ---
+        const canvas = document.getElementById('quantum-field');
+        const ctx = canvas.getContext('2d');
+        let width, height, particles = [];
+
+        function resize() {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            canvas.width = width;
+            canvas.height = height;
+            initParticles();
+        }
+
+        function initParticles() {
+            particles = [];
+            const count = window.innerWidth < 768 ? 50 : 100;
+            for(let i=0; i<count; i++) {
+                particles.push({
+                    x: Math.random() * width,
+                    y: Math.random() * height,
+                    vx: (Math.random() - 0.5) * 0.3,
+                    vy: (Math.random() - 0.5) * 0.3,
+                    size: Math.random() * 2,
+                    alpha: Math.random()
+                });
+            }
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, width, height);
+            
+            particles.forEach(p => {
+                p.x += p.vx;
+                p.y += p.vy;
+                if(p.x < 0) p.x = width;
+                if(p.x > width) p.x = 0;
+                if(p.y < 0) p.y = height;
+                if(p.y > height) p.y = 0;
+
+                ctx.fillStyle = `rgba(0, 243, 255, ${p.alpha})`;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                ctx.fill();
+            });
+            requestAnimationFrame(animateParticles);
+        }
+
+        window.addEventListener('resize', resize);
+        resize();
+
+    </script>
+</body>
+</html>
+
+
